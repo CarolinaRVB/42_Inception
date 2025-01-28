@@ -1,0 +1,39 @@
+networks:
+  inception:
+    name: inception
+
+volumes:
+  mariadb:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/crebelo-/data/mariadb
+
+services:
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb/
+    restart: always
+    image: mariadb:inception
+    env_file:
+      - .env
+    volumes:
+      - mariadb:/var/lib/mysql
+    secrets:
+      - db_password
+    networks:
+      - inception
+  nginx:
+    container_name: nginx
+    ports:
+      - "443:443"
+    build: ./requirements/nginx
+    image: nginx:inception
+    restart: always
+    networks:
+      - inception
+
+secrets:
+  db_password:
+    file: ./secrets/db_password
