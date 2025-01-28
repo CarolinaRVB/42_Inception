@@ -19,6 +19,7 @@ create_secrets:
 	mkdir -p srcs/secrets
 	[ -f srcs/secrets/db_root_password ] || openssl rand -base64 16 > srcs/secrets/db_root_password
 	[ -f srcs/secrets/db_password ] || openssl rand -base64 16 > srcs/secrets/db_password
+	chmod 
 
 up:
 	docker compose -f $(DOCKER_COMPOSE_PATH) up -d
