@@ -1,3 +1,9 @@
+secrets:
+  db_root_password:
+    file: ../db_root_password.txt
+  db_password:
+    file: ../db_password.txt
+
 networks:
   inception:
     name: inception
@@ -9,11 +15,17 @@ volumes:
       o: bind
       type: none
       device: /home/crebelo-/data/mariadb
+  wordpress:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/crebelo-/data/wordpress
 
 services:
   mariadb:
     container_name: mariadb
-    build: ./requirements/mariadb/
+    build: ./requirements/mariadb
     restart: always
     image: mariadb:inception
     env_file:
@@ -22,6 +34,7 @@ services:
       - mariadb:/var/lib/mysql
     secrets:
       - db_password
+      - db_root_password
     networks:
       - inception
   nginx:
@@ -31,9 +44,27 @@ services:
     build: ./requirements/nginx
     image: nginx:inception
     restart: always
+    volumes:
+      - wordpress:/var/www/wordpress
+    depends_on:
+      - wordpress
+      - mariadb
+    networks:
+      - inception
+  wordpress:
+    container_name: wordpress
+    build: ./requirements/wordpress
+    image: wordpress:inception
+    restart: always
+    env_file:
+      - .env
+    secrets:
+      - db_password
+      - db_root_password
+    volumes:
+      - wordpress:/var/www/wordpress
+    depends_on:
+      - mariadb
     networks:
       - inception
 
-secrets:
-  db_password:
-    file: ./secrets/db_password

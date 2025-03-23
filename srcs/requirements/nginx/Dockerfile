@@ -26,8 +26,15 @@ RUN mkdir -p /etc/ssl/certs && \
     -subj "/C=PT/ST=Lisbon/L=Lisbon/O=42School/OU=Student/CN=localhost"
 
 
+    
 # Copy necessary files for NGINX image
+COPY ./conf/nginx.conf /etc/nginx/sites-available/.
 COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+
+#COPY ./tools/default /etc/nginx/sites-available/.
+
+#RUN mkdir -p /var/www/wordpress && chown -R www-data:www-data /var/www/wordpress
+
 
 # Exposing ports we want NGINX to listen to
 EXPOSE 443 
