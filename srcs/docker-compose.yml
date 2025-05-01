@@ -1,12 +1,8 @@
-secrets:
-  db_root_password:
-    file: ../db_root_password.txt
-  db_password:
-    file: ../db_password.txt
 
 networks:
   inception:
     name: inception
+    driver: bridge
 
 volumes:
   mariadb:
@@ -32,9 +28,11 @@ services:
       - .env
     volumes:
       - mariadb:/var/lib/mysql
-    secrets:
-      - db_password
-      - db_root_password
+      - ../secrets/db_root_password.txt:/run/secrets/db_root_password.txt:ro
+      - ../secrets/db_password.txt:/run/secrets/db_password.txt:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password.txt
+      - MYSQL_PASSWORD_FILE=/run/secrets/db_password.txt
     networks:
       - inception
   nginx:
@@ -58,11 +56,14 @@ services:
     restart: always
     env_file:
       - .env
-    secrets:
-      - db_password
-      - db_root_password
     volumes:
       - wordpress:/var/www/wordpress
+      - ../secrets/db_password.txt:/run/secrets/db_password.txt:ro
+      - ../secrets/db_root_password.txt:/run/secrets/db_root_password.txt:ro
+    environment:
+      - WORDPRESS_DB_PASSWORD_FILE=/run/secrets/db_password.txt
+      - WORDPRESS_DB_ROOT_PASSWORD_FILE=/run/secrets/db_root_password.txt
+
     depends_on:
       - mariadb
     networks:

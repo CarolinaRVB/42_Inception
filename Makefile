@@ -1,11 +1,11 @@
 DOCKER_COMPOSE_PATH = ./srcs/docker-compose.yml
 ENV = srcs/.env
-DOMAIN_NAME = crebelo.42.fr
+DOMAIN_NAME = localhost
 DB_NAME = maria_db
 DB_USER = user
 DB_ROOT_USER = crebelo
 DB_HOST=mariadb
-WEBSITE_WP = crebelo
+WEBSITE_WP = https://crebelo.42.fr
 ADMIN_EMAIL = crebelo@example.com
 USER_EMAIL = user@example.com
 
@@ -25,41 +25,25 @@ create_env:
 	@echo "USER_EMAIL=$(USER_EMAIL)" >> $(ENV)
 
 create_secrets:
-	@openssl rand -base64 32 | tr -d '/+' | tr -d '\n' > db_password.txt
-	@openssl rand -base64 32 | tr -d '/+' | tr -d '\n' > db_root_password.txt
-	@chmod 600 db_password.txt db_root_password.txt
-
-
-escape_special_chars = $(shell echo $(1) | sed 's/[&/\]/\\&/g; s/[ ]/\\ /g; s/"/\\"/g; s/'\''/\\'\''/g')
-
-fill_init_sql:
-	@cp srcs/requirements/mariadb/tools/init.sql.template srcs/requirements/mariadb/tools/init.sql
-	@chmod 755 srcs/requirements/mariadb/tools/init.sql
-	@sed -i "s/{{DB_NAME}}/$(DB_NAME)/g" srcs/requirements/mariadb/tools/init.sql
-	@sed -i "s/{{DB_USER}}/$(DB_USER)/g" srcs/requirements/mariadb/tools/init.sql
-	@sed -i "s/{{DB_ROOT_USER}}/$(DB_ROOT_USER)/g" srcs/requirements/mariadb/tools/init.sql
-	@sed -i "s/{{DB_PASSWORD}}/$(call escape_special_chars,$(shell cat db_password.txt))/g" srcs/requirements/mariadb/tools/init.sql
-	@sed -i "s/{{DB_ROOT_PASSWORD}}/$(call escape_special_chars,$(shell cat db_root_password.txt))/g" srcs/requirements/mariadb/tools/init.sql
+	@openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 32 > secrets/db_password.txt
+	@openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 32 > secrets/db_root_password.txt
 
 
 up:
 	docker compose -f $(DOCKER_COMPOSE_PATH) up
 
+
 down:
-	docker compose -f $(DOCKER_COMPOSE_PATH) down --volumes --remove-orphans
+	docker compose -f $(DOCKER_COMPOSE_PATH) down --rmi all -v
 	docker image prune -a -f  # Removes all unused images
 	docker system prune -f --volumes  # Removes unused data, including networks and volumes
 	rm -f srcs/.env
-	rm -f srcs/requirements/mariadb/tools/init.sql
-	rm -rf /home/crebelo-/data/mariadb
-	rm -rf /home/crebelo-/data/wordpress
+	rm -f secrets/*
+	sudo rm -rf /home/crebelo-/data/mariadb
+	sudo rm -rf /home/crebelo-/data/wordpress
 
 build:
 	$(MAKE) create_dirs
 	$(MAKE) create_env
-	$(MAKE) fill_init_sql
+	$(MAKE) create_secrets
 	docker compose -f $(DOCKER_COMPOSE_PATH) build --no-cache
-
-# $(MAKE) create_secrets
-# rm -f db_root_password.txt
-# rm -f db_password.txt
