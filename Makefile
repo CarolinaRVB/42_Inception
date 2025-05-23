@@ -1,18 +1,19 @@
 DOCKER_COMPOSE_PATH = ./srcs/docker-compose.yml
 ENV = srcs/.env
-DOMAIN_NAME = localhost
+DOMAIN_NAME = www.crebelo-.42.fr
 DB_NAME = maria_db
 DB_USER = user
-DB_ROOT_USER = crebelo
+DB_ROOT_USER = crebelo-
 DB_HOST=mariadb
-WEBSITE_WP = https://crebelo.42.fr
+WEBSITE_WP = http://crebelo-.42.fr
 ADMIN_EMAIL = crebelo@example.com
 USER_EMAIL = user@example.com
 
 
 create_dirs:
-	@mkdir -p /home/crebelo-/data/mariadb
-	@mkdir -p /home/crebelo-/data/wordpress
+	@mkdir -p $(HOME)/data/mariadb
+	@mkdir -p $(HOME)/data/wordpress
+	@mkdir -p secrets
 
 create_env:
 	@echo "DB_NAME=$(DB_NAME)" > $(ENV)
