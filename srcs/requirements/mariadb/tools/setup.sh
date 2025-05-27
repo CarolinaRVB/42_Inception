@@ -23,5 +23,3 @@ fi
 # Start the MariaDB server in foreground
 exec mysqld --bind-address=0.0.0.0 --port=3306 --socket=/run/mysqld/mysqld.sock > /dev/null
 
-
-# mysqld --bind-address=0.0.0.0 --port=3306 --socket=/run/mysqld/mysqld.sock

@@ -5,7 +5,7 @@ DB_NAME = maria_db
 DB_USER = user
 DB_ROOT_USER = crebelo-
 DB_HOST=mariadb
-WEBSITE_WP = http://crebelo-.42.fr
+WEBSITE_WP = https://crebelo-.42.fr
 ADMIN_EMAIL = crebelo@example.com
 USER_EMAIL = user@example.com
 
@@ -30,8 +30,14 @@ create_secrets:
 	@openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 32 > secrets/db_root_password.txt
 
 
+stop:
+	docker compose -f $(DOCKER_COMPOSE_PATH) stop
+
+start:
+	docker compose -f $(DOCKER_COMPOSE_PATH) start
+
 up:
-	docker compose -f $(DOCKER_COMPOSE_PATH) up
+	docker compose -f $(DOCKER_COMPOSE_PATH) up -d
 
 
 down:
@@ -40,8 +46,7 @@ down:
 	docker system prune -f --volumes  # Removes unused data, including networks and volumes
 	rm -f srcs/.env
 	rm -f secrets/*
-	sudo rm -rf /home/crebelo-/data/mariadb
-	sudo rm -rf /home/crebelo-/data/wordpress
+	sudo rm -rf $(HOME)/data
 
 build:
 	$(MAKE) create_dirs

@@ -21,5 +21,5 @@ chown -R www-data:www-data /var/www/wordpress
 
 
 echo "Setup complete"
-
+admin
 exec /usr/sbin/php-fpm7.4 -F
