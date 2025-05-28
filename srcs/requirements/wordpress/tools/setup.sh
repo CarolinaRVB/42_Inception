@@ -14,7 +14,7 @@ if [ ! -f "/var/www/wordpress/wp-config.php" ]; then
     wp cli update --allow-root
     wp core install --allow-root --url="$WEBSITE_WP" --title="$DOMAIN_NAME" --admin_user="$DB_ROOT_USER" --admin_password="$DB_ROOT_PASSWORD" --admin_email="$ADMIN_EMAIL" --locale=en_US --skip-email
     wp user create "$DB_USER" "$USER_EMAIL" --role=author --user_pass="$DB_PASSWORD" --allow-root
-	#wp theme install blogvi --activate --allow-root
+	wp theme install partygurl --activate --allow-root
 fi
 
 chown -R www-data:www-data /var/www/wordpress
