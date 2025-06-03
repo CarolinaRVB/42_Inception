@@ -28,11 +28,12 @@ services:
       - .env
     volumes:
       - mariadb:/var/lib/mysql
-      - ../secrets/db_root_password.txt:/run/secrets/db_root_password.txt:ro
       - ../secrets/db_password.txt:/run/secrets/db_password.txt:ro
+      - ../secrets/db_root_password.txt:/run/secrets/db_root_password.txt:ro
     environment:
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password.txt
       - MYSQL_PASSWORD_FILE=/run/secrets/db_password.txt
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password.txt
+
     networks:
       - inception
   nginx:
@@ -59,11 +60,12 @@ services:
     volumes:
       - wordpress:/var/www/wordpress
       - ../secrets/db_password.txt:/run/secrets/db_password.txt:ro
-      - ../secrets/db_root_password.txt:/run/secrets/db_root_password.txt:ro
+      - ../secrets/admin_password.txt:/run/secrets/admin_password.txt:ro
+      - ../secrets/test_password.txt:/run/secrets/test_password.txt:ro
     environment:
       - WORDPRESS_DB_PASSWORD_FILE=/run/secrets/db_password.txt
-      - WORDPRESS_DB_ROOT_PASSWORD_FILE=/run/secrets/db_root_password.txt
-
+      - WORDPRESS_ADMIN_PASSWORD_FILE=/run/secrets/admin_password.txt
+      - WORDPRESS_TEST_PASSWORD_FILE=/run/secrets/test_password.txt
     depends_on:
       - mariadb
     networks:

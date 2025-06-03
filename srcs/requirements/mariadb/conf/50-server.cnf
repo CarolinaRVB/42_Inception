@@ -5,7 +5,6 @@ datadir = /var/lib/mysql
 pid-file = /run/mysqld/mysqld.pid
 user = root
 port = 3306
-socket = /var/run/mysqld/mysqld.sock
 bind-address            = mariadb
 expire_logs_days        = 10
 
