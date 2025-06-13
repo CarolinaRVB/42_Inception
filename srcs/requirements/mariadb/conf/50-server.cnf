@@ -1,12 +1,11 @@
+[mysqld]                          # Applies settings to the MariaDB server
+basedir = /usr                   # Base installation path
+datadir = /var/lib/mysql         # Where database files are stored
+pid-file = /run/mysqld/mysqld.pid# Process ID file location
+user = root                      # User that runs the mysqld process
+port = 3306                      # Default MariaDB/MySQL port
+bind-address = 0.0.0.0           # Hostname or IP to bind to 
+expire_logs_days = 10            # Auto-delete binary logs older than 10 days
+character-set-server = utf8mb4   # Default character set
+collation-server = utf8mb4_general_ci # Default collation
 
-[mysqld]
-basedir = /usr
-datadir = /var/lib/mysql
-pid-file = /run/mysqld/mysqld.pid
-user = root
-port = 3306
-bind-address            = mariadb
-expire_logs_days        = 10
-
-character-set-server  = utf8mb4
-collation-server      = utf8mb4_general_ci

@@ -9,7 +9,7 @@ DB_HOST=mariadb
 WEBSITE_WP = https://crebelo-.42.fr
 ADMIN_EMAIL = crebelo@example.com
 USER_EMAIL = user@example.com
-
+HOST_PATH = $(HOME)
 
 create_dirs:
 	@mkdir -p $(HOME)/data/mariadb
@@ -26,12 +26,19 @@ create_env:
 	@echo "WEBSITE_WP=$(WEBSITE_WP)" >> $(ENV)
 	@echo "ADMIN_EMAIL=$(ADMIN_EMAIL)" >> $(ENV)
 	@echo "USER_EMAIL=$(USER_EMAIL)" >> $(ENV)
+	@echo "HOST_PATH=$(HOST_PATH)" >> $(ENV)
 
 create_secrets:
 	@openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 32 > secrets/db_password.txt
 	@openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 32 > secrets/db_root_password.txt
 	@openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 32 > secrets/admin_password.txt
 	@openssl rand -base64 48 | tr -dc 'A-Za-z0-9' | head -c 32 > secrets/test_password.txt
+
+create_certs:
+	@openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
+		-keyout secrets/crebelo-.key \
+		-out secrets/crebelo-.crt \
+		-subj "/C=PT/ST=Lisbon/L=Lisbon/O=42School/OU=Student/CN=$(DOMAIN_NAME)"
 
 stop:
 	docker compose -f $(DOCKER_COMPOSE_PATH) stop
@@ -55,4 +62,5 @@ build:
 	$(MAKE) create_dirs
 	$(MAKE) create_env
 	$(MAKE) create_secrets
+	$(MAKE) create_certs
 	docker compose -f $(DOCKER_COMPOSE_PATH) build --no-cache

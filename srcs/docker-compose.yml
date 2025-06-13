@@ -10,13 +10,13 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/crebelo-/data/mariadb
+      device: ${HOST_PATH}/data/mariadb
   wordpress:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: /home/crebelo-/data/wordpress
+      device: ${HOST_PATH}/data/wordpress
 
 services:
   mariadb:
@@ -45,6 +45,8 @@ services:
     restart: always
     volumes:
       - wordpress:/var/www/wordpress
+      - ../secrets/crebelo-.crt:/etc/nginx/ssl/certs/crebelo-.crt:ro
+      - ../secrets/crebelo-.key:/etc/nginx/ssl/private/crebelo-.key:ro
     depends_on:
       - wordpress
       - mariadb

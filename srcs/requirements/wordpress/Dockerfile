@@ -25,5 +25,6 @@ RUN mkdir -p /run/php /var/www/wordpress
 RUN chmod +x /setup.sh
 
 ENTRYPOINT [ "/setup.sh" ]
+
 # Run setup script and start PHP-FPM
 CMD ["/usr/sbin/php-fpm7.4", "-F"]
